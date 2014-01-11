@@ -1,0 +1,34 @@
+/**
+ * Created with IntelliJ IDEA.
+ * User: rayyas000
+ * Date: 1/7/14
+ * Time: 5:17 PM
+ * To change this template use File | Settings | File Templates.
+ */
+
+
+var app = require('http').createServer(handler)
+    , io = require('socket.io').listen(app)
+    , fs = require('fs')
+
+app.listen(8000);
+
+function handler (req, res) {
+    fs.readFile("./files/SocketIndex.html",
+        function (err, data) {
+            if (err) {
+                res.writeHead(500);
+                return res.end('Error loading index.html');
+            }
+
+            res.writeHead(200);
+            res.end(data);
+        });
+}
+
+io.sockets.on('connection', function (socket) {
+    socket.emit('news', { hello: 'world' });
+    socket.on('my other event', function (data) {
+        console.log(data);
+    });
+});
